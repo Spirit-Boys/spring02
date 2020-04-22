@@ -75,6 +75,9 @@ public class ChannelService {
 				saved.setComments(c.getComments());
 			}
 		  }
+			if(c.getCover() != null) {
+				saved.setCover(c.getCover());
+			}
 		}
 		return repo.save(saved); //保存更新后的实体对象
 	}

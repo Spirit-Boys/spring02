@@ -16,7 +16,7 @@ public class Channel {
 	private String title;
 	private String quality;
 	private String url;
-	private String cover;
+	private String cover; //频道封面图片
 	private List<Comment> comments;
 	
 	/**
