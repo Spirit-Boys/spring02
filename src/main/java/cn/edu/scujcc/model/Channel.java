@@ -1,64 +1,91 @@
 package cn.edu.scujcc.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
 
 /**
  * 频道模型类
+ * 
  * @author ASUS
  *
  */
 public class Channel {
-	
+
 	@Id
 	private String id;
 	private String title;
 	private String quality;
 	private String url;
-	private String cover; //频道封面图片
+	private String cover; // 频道封面图片
 	private List<Comment> comments;
-	
+
 	/**
 	 * 返回此频道所以的评论
+	 * 
 	 * @return
 	 */
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 	public String getQuality() {
 		return quality;
 	}
+
 	public void setQuality(String quality) {
 		this.quality = quality;
 	}
+
 	public String getUrl() {
 		return url;
 	}
+
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
 	public String getCover() {
 		return cover;
 	}
+
 	public void setCover(String cover) {
 		this.cover = cover;
 	}
+
 	public List<Comment> getComments() {
 		return comments;
 	}
+
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
+
+	/**
+	 * 添加评论
+	 * 
+	 * @param comment
+	 */
+	public void addComment(Comment comment) {
+		if (null == this.comments) {
+			this.comments = new ArrayList<>();
+		}
+		this.comments.add(comment);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -71,6 +98,7 @@ public class Channel {
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -112,6 +140,7 @@ public class Channel {
 			return false;
 		return true;
 	}
+
 	@Override
 	public String toString() {
 		return "Channel [id=" + id + ", title=" + title + ", quality=" + quality + ", url=" + url + ", cover=" + cover

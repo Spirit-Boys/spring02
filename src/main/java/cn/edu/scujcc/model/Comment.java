@@ -2,8 +2,11 @@ package cn.edu.scujcc.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 评论对象
+ * 
  * @author ASUS
  *
  */
@@ -20,35 +23,45 @@ public class Comment {
 	/**
 	 * 评论日期时间
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime dt = LocalDateTime.now();
 	/**
 	 * 评论点赞数量
 	 */
 	private int star = 0;
+
 	public String getAuthor() {
 		return author;
 	}
+
 	public void setAuthor(String author) {
 		this.author = author;
 	}
+
 	public String getContent() {
 		return content;
 	}
+
 	public void setContent(String content) {
 		this.content = content;
 	}
+
 	public LocalDateTime getDt() {
 		return dt;
 	}
+
 	public void setDt(LocalDateTime dt) {
 		this.dt = dt;
 	}
+
 	public int getStar() {
 		return star;
 	}
+
 	public void setStar(int star) {
 		this.star = star;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -58,6 +71,7 @@ public class Comment {
 		result = prime * result + ((dt == null) ? 0 : dt.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -84,9 +98,10 @@ public class Comment {
 			return false;
 		return true;
 	}
+
 	@Override
 	public String toString() {
 		return "Comment [author=" + author + ", content=" + content + ", dt=" + dt + ", star=" + star + "]";
 	}
-	
+
 }
