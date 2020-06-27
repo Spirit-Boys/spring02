@@ -7,6 +7,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -27,10 +30,10 @@ public class ChannelService {
 //	private List<Channel> getAllChannels(){
 //		return repo.findAll();
 //		}
-
+//	@Cacheable(cacheNames="channels", key="#channelId")
 	public Channel getChannel(String channelId) {
+		logger.debug("从数据库中读取频道"+channelId);
 		Optional<Channel> result = repo.findById(channelId);
-
 		if (result.isPresent()) {
 			return result.get();
 		} else {
@@ -41,7 +44,9 @@ public class ChannelService {
 	/**
 	 * 获取所有频道
 	 */
+	@Cacheable(cacheNames="channels", key="'all_channels'")
 	public List<Channel> getAllChannels() {
+		logger.debug("从数据库读取所有频道。。。");
 		return repo.findAll();
 	}
 
@@ -63,6 +68,7 @@ public class ChannelService {
 	 * @param c 待更新的频道
 	 * @return 更新后的频道
 	 */
+	@CacheEvict(cacheNames="channels", key="'all_channels'")
 	public Channel updateChannel(Channel c) {
 		// TODO 仅修改用户指定的属性
 		Channel saved = getChannel(c.getId());
@@ -95,6 +101,7 @@ public class ChannelService {
 	 * @param c
 	 * @return
 	 */
+	@CachePut(cacheNames="channels", key="#result.id")
 	public Channel createChannel(Channel c) {
 		return repo.save(c);
 		/*
@@ -106,12 +113,10 @@ public class ChannelService {
 
 	public List<Channel> searcha(String title) {
 		return repo.findByTitle(title);
-
 	}
 
 	public List<Channel> searchb(String quality) {
 		return repo.findByQuality(quality);
-
 	}
 
 	/**
@@ -153,7 +158,6 @@ public class ChannelService {
 	public List<Comment> hotComments(String channelId) {
 		List<Comment> result = null;
 		Channel saved = getChannel(channelId);
-		if (saved != null) {
 			result = saved.getComments();
 			saved.getComments().sort(new Comparator<Comment>() {
 				// 若o1<o2,则返回负数;若o1>o2,则返回正数;若o1=o2,则返回0
@@ -171,11 +175,6 @@ public class ChannelService {
 			if (result.size() > 3) {
 				result = result.subList(0, 3);
 			}
-			logger.debug("热门评论有" + result.size() + "条。。。");
-			logger.debug(result.toString());
-		} else {
-			logger.warn("指定的频道不存在，id=" + channelId);
-		}
 		return result;
 	}
 

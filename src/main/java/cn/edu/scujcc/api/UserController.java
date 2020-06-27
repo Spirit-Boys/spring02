@@ -10,32 +10,51 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.edu.scujcc.UserExistException;
 import cn.edu.scujcc.model.User;
+import cn.edu.scujcc.service.Result;
 import cn.edu.scujcc.service.UserService;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-	
+
 	@Autowired
 	private UserService service;
 	
 	@PostMapping("/register")
-	public User register(@RequestBody User u) {
+	public Result<User> register(@RequestBody User u) {
+		Result<User> result = new Result<User>();
 		logger.debug("注册用户，数据："+u);
-		User saved = service.createUser(u);
-		return saved;
+		User saved = null;
+		try {
+			saved = service.createUser(u);
+		} catch (UserExistException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			saved = service.createUser(u);
+			result = result.ok();
+			result.setData(saved);
+		}catch (UserExistException e) {
+			logger.error("用户名已存在。", e);
+			result.setStatus(Result.ERROR);
+			result.setMessage("用户名已存在");
+		}
+		return result;
 	}
 	
 	@GetMapping("/login/{username}/{password}")
-	public int login(@PathVariable String username,@PathVariable String password) {
-		int result = 0;
-		//FIXME 删除此句日志
-		logger.debug("用户"+username+"准备登陆，密码是："+password);
+	public Result<String> login(@PathVariable String username,@PathVariable String password) {
+		Result<String> result = new Result<>();
 		boolean status = service.checkUser(username, password);
 		if(status) {
-			result = 1;
+			result = result.ok();
+			result.setData(service.checkIn(username));
+		}else {
+			result = result.error();
 		}
 		return result;
 	}
